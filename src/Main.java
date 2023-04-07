@@ -6,8 +6,6 @@ import static java.lang.Math.pow;
 
 public class Main {
 
-
-
     public static void main(String args[]) throws Exception{
         File file = new File("input.txt");
         FileWriter output = new FileWriter("output.txt");
@@ -66,10 +64,20 @@ public class Main {
 
 
     }
-    // Note for this part's appointed person: you can change the function names as you like
+
+    // Method to change the byte ordering according to endian type
     public static String CheckEndian(String endianType, String hexNumber){
 
-        return hexNumber;
+        // if Little Endian, change the byte ordering-> ex: A3B4C5 -> C5B4A3
+        if(endianType.equals("Little Endian")){
+            String newHex = "";
+            for(int i = hexNumber.length()-1; i > 0; i = i-2){
+                newHex = newHex + hexNumber.charAt(i-1);
+                newHex = newHex + hexNumber.charAt(i);
+            }
+            return newHex;
+        }
+        return hexNumber; // if it is not Little Endian, return initial hex number
     }
 
     public static int Convert2Decimal4Signed(String hexNumber){
