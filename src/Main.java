@@ -218,12 +218,61 @@ public class Main {
         return value;
     }
 
-    // will be implemented
+
     public static int Convert2Decimal4Unsigned(String hexNumber) {
 
-        return 5;
+         int convertedDecimalNumber = 0;
+         String convertedBinaryNumber = Hex2Binary(hexNumber);
+         int number;
+         for(int i = convertedBinaryNumber.length() -1 ; i >= 0  ; i--){
+             if (convertedBinaryNumber.charAt(i) == '0')
+                 number = 0;
+             else
+                 number = 1;
+             convertedDecimalNumber += (number) * pow(2,convertedBinaryNumber.length() -1 -i);
+         }
+        return convertedDecimalNumber;
     }
+/*
+    public static String Round2Even(String fraction) {
+        String newFraction = " ";
+        String control = "notHalfway";
 
+        if (fraction.length() > 13) {
+            for (int i = 13; i < fraction.length(); i++) {
+                if (fraction.charAt(i) != 1) {
+                    control = "halfway";
+                }
+            }
+
+            for (int i = 0; i < 13; i++) {
+                if (fraction.charAt(13) == '0') {
+                       newFraction = newFraction + fraction.charAt(i);
+                       return newFraction;
+
+                }
+                else if (fraction.charAt(13) == '1' && control == "halfway")  {
+                          if(fraction.charAt(12) == '0') {
+                              newFraction = newFraction + fraction.charAt(i);
+                              return newFraction;
+                          }
+                                  else {
+
+
+                              }
+                              }
+
+                else if (fraction.charAt(13) == '1' && control == "notHalfway") {
+
+                }
+            }
+        }
+
+        else {
+            return fraction;
+        }
+    }
+*/
     // will be implemented
     public static String Convert2Decimal4Fraction(String hexNumber) {
 
