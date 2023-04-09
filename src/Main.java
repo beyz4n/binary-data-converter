@@ -81,7 +81,6 @@ public class Main {
     public static int Convert2Decimal4Signed(String hexNumber) {
 
         String binary = Hex2Binary(hexNumber);
-        System.out.println(binary);
         int value = 0;
         if (binary.charAt(0) == '1')
             value = (int) (-pow(2, binary.length() - 1));
@@ -90,7 +89,6 @@ public class Main {
             if (binary.charAt(i) == '1')
                 value += (int) pow(2, binary.length() - i - 1);
         }
-        System.out.println(value);
         return value;
 
     }
@@ -242,7 +240,6 @@ public class Main {
 
          int convertedDecimalNumber = 0;
          String convertedBinaryNumber = Hex2Binary(hexNumber);
-        System.out.println(convertedBinaryNumber);
          int number;
          for(int i = convertedBinaryNumber.length() -1 ; i >= 0  ; i--){
              if (convertedBinaryNumber.charAt(i) == '0')
@@ -251,7 +248,6 @@ public class Main {
                  number = 1;
              convertedDecimalNumber += (number) * pow(2,convertedBinaryNumber.length() -1 -i);
          }
-        System.out.println(convertedDecimalNumber);
         return convertedDecimalNumber;
     }
 
