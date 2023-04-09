@@ -277,10 +277,16 @@ public class Main {
         return newFraction;
     }
 
-    // will be implemented
-    public static String Convert2Decimal4Fraction(String hexNumber) {
+    // Method for converting fraction part of the floating point number to decimal
+    public static String Convert2Decimal4Fraction(String fraction){
+        int numberOfDigit = fraction.length();
+        double frac = 0;
 
-        return "";
+        for(int i = 1; i < numberOfDigit; i++){
+            frac += Math.pow(2, -i);
+        }
+
+        return ("" + frac).substring(1);
     }
 
     public static boolean isAllZeros(String str)
