@@ -99,67 +99,67 @@ public class Main {
         int count = 0;
         while (len > 0) {
             if (hex.charAt(count) == '0') {
-                converted += "0000 ";
+                converted += "0000";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '1') {
-                converted += "0001 ";
+                converted += "0001";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '2') {
-                converted += "0010 ";
+                converted += "0010";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '3') {
-                converted += "0011 ";
+                converted += "0011";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '4') {
-                converted += "0100 ";
+                converted += "0100";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '5') {
-                converted += "0101 ";
+                converted += "0101";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '6') {
-                converted += "0110 ";
+                converted += "0110";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '7') {
-                converted += "0111 ";
+                converted += "0111";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '8') {
-                converted += "1000 ";
+                converted += "1000";
                 len--;
                 count++;
             } else if (hex.charAt(count) == '9') {
-                converted += "1001 ";
+                converted += "1001";
                 len--;
                 count++;
             } else if (hex.charAt(count) == 'A') {
-                converted += "1010 ";
+                converted += "1010";
                 len--;
                 count++;
             } else if (hex.charAt(count) == 'B') {
-                converted += "1011 ";
+                converted += "1011";
                 len--;
                 count++;
             } else if (hex.charAt(count) == 'C') {
-                converted += "1100 ";
+                converted += "1100";
                 len--;
                 count++;
             } else if (hex.charAt(count) == 'D') {
-                converted += "1101 ";
+                converted += "1101";
                 len--;
                 count++;
             } else if (hex.charAt(count) == 'E') {
-                converted += "1110 ";
+                converted += "1110";
                 len--;
                 count++;
             } else if (hex.charAt(count) == 'F') {
-                converted += "1111 ";
+                converted += "1111";
                 len--;
                 count++;
             }
@@ -207,8 +207,11 @@ public class Main {
             value = "" + Convert2Decimal4Unsigned(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
         }
         else if (exp.contains("0")) { // if it is denormalized
-
-
+            e = 1;
+            E = e - bias;
+            mantissa = "0" + fraction;
+            String intPartOfMantissa = mantissa.substring(0, E + 1);
+            String fractionPartOfMantissa = mantissa.substring(E+1);
         }
         else { // if it is special value
 
@@ -233,7 +236,7 @@ public class Main {
          }
         return convertedDecimalNumber;
     }
-/*
+
     public static String Round2Even(String fraction) {
         String newFraction = " ";
         String control = "notHalfway";
@@ -271,13 +274,41 @@ public class Main {
         else {
             return fraction;
         }
+        return newFraction;
     }
-*/
+
     // will be implemented
     public static String Convert2Decimal4Fraction(String hexNumber) {
 
         return "";
     }
 
+    public static boolean isAllZeros(String str)
+    {
+        for (int i = 0; i < str.length(); i++){
+            if(str.charAt(i) != '0')
+                return false;
+        }
+        return true;
+    }
 
+    public static String binaryAddOne(String number){
+        int i = number.length() - 1;
+        char[] numberChar = number.toCharArray();
+
+        while(i >= 0){
+            if(numberChar[i] == '1') {
+                numberChar[i] = '0';
+                i--;
+                if(i == -1) {
+                    return "1" + String.valueOf(numberChar);
+                }
+            }
+            else {
+                numberChar[i] = '1';
+                break;
+            }
+        }
+        return String.valueOf(numberChar);
+    }
 }
