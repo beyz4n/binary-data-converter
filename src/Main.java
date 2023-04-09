@@ -169,26 +169,27 @@ public class Main {
 
 
     // Method to convert floating point number to decimal number
-    public static String Convert2Decimal4Floats(String hexNumber) {
+    public static String Float2Decimal(String hexNumber) {
 
+        String binaryNumber = Hex2Binary(hexNumber);
         String exp = "";
-        String signBit = "" + hexNumber.charAt(0);
+        String signBit = "" + binaryNumber.charAt(0);
         String fraction = "";
         String value = "";
 
-        if (hexNumber.length() == 8) { // for 1 byte
-            exp = hexNumber.substring(1, 5); // 4 bits will be used exp part
-            fraction = hexNumber.substring(5);
-        } else if (hexNumber.length() == 16) { // for 2 byte
-            exp = hexNumber.substring(1, 7); // 6 bits will be used exp part
-            fraction = hexNumber.substring(7);
-        } else if (hexNumber.length() == 24) { // for 3 byte
-            exp = hexNumber.substring(1, 9); // 8 bits will be used exp part
-            fraction = hexNumber.substring(9);
+        if (binaryNumber.length() == 8) { // for 1 byte
+            exp = binaryNumber.substring(1, 5); // 4 bits will be used exp part
+            fraction = binaryNumber.substring(5);
+        } else if (binaryNumber.length() == 16) { // for 2 byte
+            exp = binaryNumber.substring(1, 7); // 6 bits will be used exp part
+            fraction = binaryNumber.substring(7);
+        } else if (binaryNumber.length() == 24) { // for 3 byte
+            exp = binaryNumber.substring(1, 9); // 8 bits will be used exp part
+            fraction = binaryNumber.substring(9);
             // for this line: RoundToEven must be called for fraction part of 3 byte floating point num
-        } else if (hexNumber.length() == 32) {// for 4 byte
-            exp = hexNumber.substring(1, 11); // 10 bits will be used exp part
-            fraction = hexNumber.substring(11);
+        } else if (binaryNumber.length() == 32) {// for 4 byte
+            exp = binaryNumber.substring(1, 11); // 10 bits will be used exp part
+            fraction = binaryNumber.substring(11);
             // for this line: RoundToEven must be called for fraction part of 4 byte floating point num
         }
 
@@ -204,12 +205,15 @@ public class Main {
             String intPartOfMantissa = mantissa.substring(0, E + 1);
             String fractionPartOfMantissa = mantissa.substring(E + 1);
             value = "" + Convert2Decimal4Unsigned(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
-        } else if (exp.contains("0")) { // if it is denormalized
+        }
+        else if (exp.contains("0")) { // if it is denormalized
 
-        } else { // if it is special value
 
         }
+        else { // if it is special value
 
+
+        }
 
         return value;
     }
