@@ -1,5 +1,5 @@
 import java.io.File;
-import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.*;
 
 import static java.lang.Math.pow;
@@ -8,58 +8,59 @@ public class Main {
 
     public static void main(String args[]) throws Exception {
         File file = new File("input.txt");
-        FileWriter output = new FileWriter("output.txt");
+        File outputFile = new File("output.txt");
+
+        PrintWriter output = new PrintWriter(outputFile);
 
         if (!file.exists())
-            throw new Exception("input file does not exsist: " + file.getName());
+            throw new Exception("input file does not exist: " + file.getName());
 
         Scanner fileInput = new Scanner(file);
 
         Scanner input = new Scanner(System.in);
 
-        System.out.println("Byte ordering: ");
-        String endian = input.next();
+        System.out.print("Byte ordering: ");
+        String endian = input.nextLine();
 
-        System.out.println("Data type: ");
-        String dType = input.next();
+        System.out.print("Data type: ");
+        String dType = input.nextLine();
 
-        System.out.println("Data type size: ");
-        String dSize = input.next();
+        System.out.print("Data type size: ");
+        String dSize = input.nextLine();
 
-        int size = dSize.charAt(0);
+        int size = dSize.charAt(0)-'0';
 
         String line = "";
+        String tempLine = "";
 
         // Note: unnecessary checks, change to for loops in if
         while (fileInput.hasNextLine()) {
-            line = CheckEndian(endian, fileInput.nextLine().trim());
+            line = fileInput.nextLine().trim();
+            for(int i = 0; i < line.length() ; i++){
+                if(line.charAt(i) != ' '){
+                    tempLine += line.charAt(i);
+                }
+            }
+            line = CheckEndian(endian, tempLine);
+            tempLine = "";
 
             for (int i = 0; line.length() - i != 0; i += size * 2) {
-                //line.substring(i,i+size*2);
 
                 if (dType.equalsIgnoreCase("Floating point"))
-                    line.substring(i, i + size * 2);
+                    output.print(Float2Decimal(line.substring(i, i + size * 2)) + " ");
                 else if (dType.equalsIgnoreCase("Signed integer"))
-                    output.write(Convert2Decimal4Signed(line.substring(i, i + size * 2)));
+                    output.print(Convert2Decimal4Signed(line.substring(i, i + size * 2)) + " ");
                 else if (dType.equalsIgnoreCase("Unsigned integer"))
-                    line.substring(i, i + size * 2);
+                    output.print(Convert2Decimal4Unsigned(line.substring(i, i + size * 2)) + " ");
                 else
                     throw new Exception("invalid data type: " + line);
 
 
             }
-            // Maybe switch case instead of if else
-            /*
-            switch (dType) {
-                case "Floating point":
-                    // call function in loop
-                    break;
-                }
-
-                 */
+            output.println();
         }
 
-
+    output.close();
     }
 
     // Method to change the byte ordering according to endian type
@@ -80,6 +81,7 @@ public class Main {
     public static int Convert2Decimal4Signed(String hexNumber) {
 
         String binary = Hex2Binary(hexNumber);
+        System.out.println(binary);
         int value = 0;
         if (binary.charAt(0) == '1')
             value = (int) (-pow(2, binary.length() - 1));
@@ -88,6 +90,7 @@ public class Main {
             if (binary.charAt(i) == '1')
                 value += (int) pow(2, binary.length() - i - 1);
         }
+        System.out.println(value);
         return value;
 
     }
@@ -138,27 +141,27 @@ public class Main {
                 converted += "1001";
                 len--;
                 count++;
-            } else if (hex.charAt(count) == 'A') {
+            } else if (hex.charAt(count) == 'a') {
                 converted += "1010";
                 len--;
                 count++;
-            } else if (hex.charAt(count) == 'B') {
+            } else if (hex.charAt(count) == 'b') {
                 converted += "1011";
                 len--;
                 count++;
-            } else if (hex.charAt(count) == 'C') {
+            } else if (hex.charAt(count) == 'c') {
                 converted += "1100";
                 len--;
                 count++;
-            } else if (hex.charAt(count) == 'D') {
+            } else if (hex.charAt(count) == 'd') {
                 converted += "1101";
                 len--;
                 count++;
-            } else if (hex.charAt(count) == 'E') {
+            } else if (hex.charAt(count) == 'e') {
                 converted += "1110";
                 len--;
                 count++;
-            } else if (hex.charAt(count) == 'F') {
+            } else if (hex.charAt(count) == 'f') {
                 converted += "1111";
                 len--;
                 count++;
@@ -239,6 +242,7 @@ public class Main {
 
          int convertedDecimalNumber = 0;
          String convertedBinaryNumber = Hex2Binary(hexNumber);
+        System.out.println(convertedBinaryNumber);
          int number;
          for(int i = convertedBinaryNumber.length() -1 ; i >= 0  ; i--){
              if (convertedBinaryNumber.charAt(i) == '0')
@@ -247,6 +251,7 @@ public class Main {
                  number = 1;
              convertedDecimalNumber += (number) * pow(2,convertedBinaryNumber.length() -1 -i);
          }
+        System.out.println(convertedDecimalNumber);
         return convertedDecimalNumber;
     }
 
