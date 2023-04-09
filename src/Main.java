@@ -212,12 +212,25 @@ public class Main {
             mantissa = "0" + fraction;
             String intPartOfMantissa = mantissa.substring(0, E + 1);
             String fractionPartOfMantissa = mantissa.substring(E+1);
+            if(isAllZeros(fractionPartOfMantissa)){
+                if(signBit.equals("0"))
+                    value = "+0";
+                else
+                    value = "-0";
+            }
+            value = "" + Convert2Decimal4Unsigned(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
         }
         else { // if it is special value
-
-
+            if(isAllZeros(fraction)) {
+                if(signBit.equals("0"))
+                    value = "+∞";
+                else
+                    value = "-∞";
+            }
+            else{
+                value = "NaN";
+            }
         }
-
         return value;
     }
 
