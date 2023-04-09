@@ -109,4 +109,75 @@ public class Main {
         return binary;
     }
 
+
+    // Method to convert floating point number to decimal number
+    public static String Convert2Decimal4Floats(String hexNumber){
+
+        String exp = "";
+        String signBit = "" + hexNumber.charAt(0);
+        String fraction = "";
+        String value = "";
+
+        if(hexNumber.length() == 8){ // for 1 byte
+            exp = hexNumber.substring(1,5); // 4 bits will be used exp part
+            fraction = hexNumber.substring(5);
+        }
+        else if(hexNumber.length() == 16){ // for 2 byte
+            exp = hexNumber.substring(1,7); // 6 bits will be used exp part
+            fraction = hexNumber.substring(7);
+        }
+        else if(hexNumber.length() == 24){ // for 3 byte
+            exp = hexNumber.substring(1,9); // 8 bits will be used exp part
+            fraction = hexNumber.substring(9);
+            // for this line: RoundToEven must be called for fraction part of 3 byte floating point num
+        }
+        else if(hexNumber.length() == 32) {// for 4 byte
+            exp = hexNumber.substring(1,11); // 10 bits will be used exp part
+            fraction = hexNumber.substring(11);
+            // for this line: RoundToEven must be called for fraction part of 4 byte floating point num
+        }
+
+        int bias = (int)(Math.pow(2, exp.length()-1) -1) ;
+        int e; // variable for exp value in decimal
+        int E; // variable for E in "value = (-1)^s * M * 2^E" calculation
+        String mantissa;
+
+        if(!exp.contains("0") || !exp.contains("1")){ // if it is normalized
+            e = Convert2Decimal4Unsigned(exp);
+            E = e - bias;
+            mantissa = "1" + fraction;
+            String intPartOfMantissa = mantissa.substring(0, E + 1);
+            String fractionPartOfMantissa = mantissa.substring(E + 1);
+            value = "" + Convert2Decimal4Unsigned(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
+        }
+        else if (exp.contains("0")) { // if it is denormalized
+
+        }
+        else { // if it is special value
+
+        }
+
+
+        return value;
+    }
+
+    // will be implemented
+    public static int Convert2Decimal4Unsigned(String hexNumber){
+
+        return 5;
+    }
+
+    // will be implemented
+    public static String Convert2Decimal4Fraction(String hexNumber){
+
+        return "";
+    }
+
+
+
+
+
+
+
+
 }
