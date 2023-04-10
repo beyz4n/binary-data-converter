@@ -221,15 +221,16 @@ public class Main {
             e = 1;
             E = e - bias;
             mantissa = "0" + fraction;
-            String intPartOfMantissa = mantissa.substring(0, E );
-            String fractionPartOfMantissa = mantissa.substring(E);
-            if(isAllZeros(fractionPartOfMantissa)){
+            if(isAllZeros(fraction)){
                 if(signBit.equals("0"))
                     value = "0";
                 else
                     value = "-0";
             }
-            value = sign + BinaryUnsigned2Decimal(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
+            else{
+                double decimalMantissa = 1 + Convert2Decimal4Fraction(fraction);
+                value = sign + (decimalMantissa * Math.pow(2, E)) ;
+            }
         }
         else { // if it is special value
             if(isAllZeros(fraction)) {
