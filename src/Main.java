@@ -232,7 +232,7 @@ public class Main {
             String fractionPartOfMantissa = mantissa.substring(E+1);
             if(isAllZeros(fractionPartOfMantissa)){
                 if(signBit.equals("0"))
-                    value = "+0";
+                    value = "0";
                 else
                     value = "-0";
             }
@@ -241,7 +241,7 @@ public class Main {
         else { // if it is special value
             if(isAllZeros(fraction)) {
                 if(signBit.equals("0"))
-                    value = "+∞";
+                    value = "∞";
                 else
                     value = "-∞";
             }
