@@ -175,6 +175,7 @@ public class Main {
         String binaryNumber = Hex2Binary(hexNumber);
         String exp = "";
         String signBit = "" + binaryNumber.charAt(0);
+        String sign = (signBit.equals('1')) ? "-" : "" ;
         String fraction = "";
         String value = "";
 
@@ -222,7 +223,7 @@ public class Main {
                 intPartOfMantissa = mantissa.substring(0, 1); // Take integer part of floating point number
                 fractionPartOfMantissa = mantissa.substring(1); // Take fraction part of floating point number
             }
-            value = "" + BinaryUnsigned2Decimal(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
+            value = sign + BinaryUnsigned2Decimal(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
         }
         else if (exp.contains("0")) { // if it is denormalized
             e = 1;
