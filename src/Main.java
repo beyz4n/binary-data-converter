@@ -236,7 +236,7 @@ public class Main {
                 else
                     value = "-0";
             }
-            value = "" + Convert2Decimal4Unsigned(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
+            value = "" + BinaryUnsigned2Decimal(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
         }
         else { // if it is special value
             if(isAllZeros(fraction)) {
