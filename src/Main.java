@@ -188,7 +188,7 @@ public class Main {
         } else if (binaryNumber.length() == 24) { // for 3 bytes
             exp = binaryNumber.substring(1, 9); // 8 bits will be used exp part
             fraction = binaryNumber.substring(9);
-            //fraction = Round2Even(fraction);
+            fraction = Round2Even(fraction);
             if(fraction.length() == 14){ // if rounded fraction has 14 bits
                 exp = binaryAddOne(exp);
                 fraction = fraction.substring(1);
@@ -196,7 +196,7 @@ public class Main {
         } else if (binaryNumber.length() == 32) {// for 4 bytes
             exp = binaryNumber.substring(1, 11); // 10 bits will be used exp part
             fraction = binaryNumber.substring(11);
-            //fraction = Round2Even(fraction);
+            fraction = Round2Even(fraction);
             if(fraction.length() == 14){ // if rounded fraction has 14 bits
                 exp = binaryAddOne(exp);
                 fraction = fraction.substring(1);
@@ -215,11 +215,18 @@ public class Main {
             String intPartOfMantissa;
             String fractionPartOfMantissa;
             if(E >= 0) {
-                intPartOfMantissa = mantissa.substring(0, E + 1); // Take integer part of floating point number
-                fractionPartOfMantissa = mantissa.substring(E + 1); // Take fraction part of floating point number
+                if(E <= mantissa.length() ){
+                    intPartOfMantissa = mantissa.substring(0, E); // Take integer part of floating point number
+                    fractionPartOfMantissa = mantissa.substring(E); // Take fraction part of floating point number
+                }
+                else {
+                    intPartOfMantissa = AddZerosEnd(E - (mantissa.length()-1), mantissa);
+                    // kod eklenecek buraya
+                }
+
             }
             else {
-                mantissa = AddZeros(E, mantissa);
+                mantissa = AddZerosBeginning(E, mantissa);
                 intPartOfMantissa = mantissa.substring(0, 1); // Take integer part of floating point number
                 fractionPartOfMantissa = mantissa.substring(1); // Take fraction part of floating point number
             }
@@ -229,8 +236,8 @@ public class Main {
             e = 1;
             E = e - bias;
             mantissa = "0" + fraction;
-            String intPartOfMantissa = mantissa.substring(0, E + 1);
-            String fractionPartOfMantissa = mantissa.substring(E+1);
+            String intPartOfMantissa = mantissa.substring(0, E );
+            String fractionPartOfMantissa = mantissa.substring(E);
             if(isAllZeros(fractionPartOfMantissa)){
                 if(signBit.equals("0"))
                     value = "0";
@@ -366,7 +373,7 @@ public class Main {
     }
     // Method to put zeros on the beginning of the binary number
     // ex: for this operation 1.0101 * 2^-1 = 0.10101
-    public static String AddZeros(int exp, String binary){
+    public static String AddZerosBeginning(int exp, String binary){
         String zeros = "";
 
         for(int i = 0; i < -exp; i++){
@@ -375,5 +382,13 @@ public class Main {
         return zeros + binary;
     }
 
+    public static String AddZerosEnd(int exp, String binary){
+        String zeros = "";
+
+        for(int i = 0; i < exp; i++){
+            zeros += "0";
+        }
+        return binary + zeros ;
+    }
 
 }
