@@ -67,7 +67,7 @@ public class Main {
     public static String CheckEndian(String endianType, String hexNumber) {
 
         // if Little Endian, change the byte ordering-> ex: A3B4C5 -> C5B4A3
-        if (endianType.equals("Little Endian")) {
+        if (endianType.equalsIgnoreCase("Little Endian")) {
             String newHex = "";
             for (int i = hexNumber.length() - 1; i > 0; i = i - 2) {
                 newHex = newHex + hexNumber.charAt(i - 1);
@@ -187,11 +187,19 @@ public class Main {
         } else if (binaryNumber.length() == 24) { // for 3 byte
             exp = binaryNumber.substring(1, 9); // 8 bits will be used exp part
             fraction = binaryNumber.substring(9);
-            // for this line: RoundToEven must be called for fraction part of 3 byte floating point num
+            //fraction = Round2Even(fraction);
+            if(fraction.length() == 14){ // if rounded fraction has 14 bits
+                exp = binaryAddOne(exp);
+                fraction = fraction.substring(1);
+            }
         } else if (binaryNumber.length() == 32) {// for 4 byte
             exp = binaryNumber.substring(1, 11); // 10 bits will be used exp part
             fraction = binaryNumber.substring(11);
-            // for this line: RoundToEven must be called for fraction part of 4 byte floating point num
+            //fraction = Round2Even(fraction);
+            if(fraction.length() == 14){ // if rounded fraction has 14 bits
+                exp = binaryAddOne(exp);
+                fraction = fraction.substring(1);
+            }
         }
 
         int bias = (int) (Math.pow(2, exp.length() - 1) - 1);
@@ -199,13 +207,13 @@ public class Main {
         int E; // variable for E in "value = (-1)^s * M * 2^E" calculation
         String mantissa;
 
-        if (!exp.contains("0") || !exp.contains("1")) { // if it is normalized
-            e = Convert2Decimal4Unsigned(exp);
+        if (exp.contains("0") && exp.contains("1")) { // if it is normalized
+            e = BinaryUnsigned2Decimal(exp);
             E = e - bias;
-            mantissa = "1" + fraction;
-            String intPartOfMantissa = mantissa.substring(0, E + 1);
-            String fractionPartOfMantissa = mantissa.substring(E + 1);
-            value = "" + Convert2Decimal4Unsigned(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
+            mantissa = "1" + fraction; // for denormalized values: mantissa = 1.fraction
+            String intPartOfMantissa = mantissa.substring(0, E + 1); // Take integer part of floating point number
+            String fractionPartOfMantissa = mantissa.substring(E + 1); // Take fraction part of floating point number
+            value = "" + BinaryUnsigned2Decimal(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
         }
         else if (exp.contains("0")) { // if it is denormalized
             e = 1;
@@ -296,11 +304,27 @@ public class Main {
         int numberOfDigit = fraction.length();
         double frac = 0;
 
-        for(int i = 1; i < numberOfDigit; i++){
+        for(int i = 1; i <= numberOfDigit; i++){
             frac += Math.pow(2, -i);
         }
 
         return ("" + frac).substring(1);
+    }
+
+    // Method to convert unsigned binary number to decimal number
+    public static int BinaryUnsigned2Decimal(String binary){
+
+        int decimal = 0;
+        int exp = binary.length();
+
+        for(int i = 0; i < binary.length(); i++){
+            exp --;
+            if(binary.charAt(i) == '1') {
+                decimal += Math.pow(2, exp);
+            }
+        }
+
+        return decimal;
     }
 
     public static boolean isAllZeros(String str)
