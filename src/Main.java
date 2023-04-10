@@ -208,29 +208,14 @@ public class Main {
         int E; // variable for E in "value = (-1)^s * M * 2^E" calculation
         String mantissa;
 
-        if (exp.contains("0") && exp.contains("1")) { // if it is normalized
+
+        // if it is normalized
+        if (exp.contains("0") && exp.contains("1")) {
             e = BinaryUnsigned2Decimal(exp);
             E = e - bias;
             mantissa = "1" + fraction; // for denormalized values: mantissa = 1.fraction
-            String intPartOfMantissa;
-            String fractionPartOfMantissa;
-            if(E >= 0) {
-                if(E <= mantissa.length() ){
-                    intPartOfMantissa = mantissa.substring(0, E); // Take integer part of floating point number
-                    fractionPartOfMantissa = mantissa.substring(E); // Take fraction part of floating point number
-                }
-                else {
-                    intPartOfMantissa = AddZerosEnd(E - (mantissa.length()-1), mantissa);
-                    // kod eklenecek buraya
-                }
-
-            }
-            else {
-                mantissa = AddZerosBeginning(E, mantissa);
-                intPartOfMantissa = mantissa.substring(0, 1); // Take integer part of floating point number
-                fractionPartOfMantissa = mantissa.substring(1); // Take fraction part of floating point number
-            }
-            value = sign + BinaryUnsigned2Decimal(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
+            double decimalMantissa = 1 + Convert2Decimal4Fraction(fraction);
+            value = sign + (decimalMantissa * Math.pow(2, E)) ;
         }
         else if (exp.contains("0")) { // if it is denormalized
             e = 1;
@@ -315,7 +300,7 @@ public class Main {
     }
 
     // Method for converting fraction part of the floating point number to decimal
-    public static String Convert2Decimal4Fraction(String fraction){
+    public static double Convert2Decimal4Fraction(String fraction){
         int numberOfDigit = fraction.length();
         double frac = 0;
 
@@ -324,7 +309,7 @@ public class Main {
                 frac += Math.pow(2, -i);
             }
         }
-        return ("" + frac).substring(1);
+        return frac;
     }
 
     // Method to convert unsigned binary number to decimal number
@@ -371,24 +356,6 @@ public class Main {
         }
         return String.valueOf(numberChar);
     }
-    // Method to put zeros on the beginning of the binary number
-    // ex: for this operation 1.0101 * 2^-1 = 0.10101
-    public static String AddZerosBeginning(int exp, String binary){
-        String zeros = "";
 
-        for(int i = 0; i < -exp; i++){
-            zeros += "0";
-        }
-        return zeros + binary;
-    }
-
-    public static String AddZerosEnd(int exp, String binary){
-        String zeros = "";
-
-        for(int i = 0; i < exp; i++){
-            zeros += "0";
-        }
-        return binary + zeros ;
-    }
 
 }
