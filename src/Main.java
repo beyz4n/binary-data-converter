@@ -181,10 +181,10 @@ public class Main {
         if (binaryNumber.length() == 8) { // for 1 byte
             exp = binaryNumber.substring(1, 5); // 4 bits will be used exp part
             fraction = binaryNumber.substring(5);
-        } else if (binaryNumber.length() == 16) { // for 2 byte
+        } else if (binaryNumber.length() == 16) { // for 2 bytes
             exp = binaryNumber.substring(1, 7); // 6 bits will be used exp part
             fraction = binaryNumber.substring(7);
-        } else if (binaryNumber.length() == 24) { // for 3 byte
+        } else if (binaryNumber.length() == 24) { // for 3 bytes
             exp = binaryNumber.substring(1, 9); // 8 bits will be used exp part
             fraction = binaryNumber.substring(9);
             //fraction = Round2Even(fraction);
@@ -192,7 +192,7 @@ public class Main {
                 exp = binaryAddOne(exp);
                 fraction = fraction.substring(1);
             }
-        } else if (binaryNumber.length() == 32) {// for 4 byte
+        } else if (binaryNumber.length() == 32) {// for 4 bytes
             exp = binaryNumber.substring(1, 11); // 10 bits will be used exp part
             fraction = binaryNumber.substring(11);
             //fraction = Round2Even(fraction);
@@ -211,8 +211,17 @@ public class Main {
             e = BinaryUnsigned2Decimal(exp);
             E = e - bias;
             mantissa = "1" + fraction; // for denormalized values: mantissa = 1.fraction
-            String intPartOfMantissa = mantissa.substring(0, E + 1); // Take integer part of floating point number
-            String fractionPartOfMantissa = mantissa.substring(E + 1); // Take fraction part of floating point number
+            String intPartOfMantissa;
+            String fractionPartOfMantissa;
+            if(E >= 0) {
+                intPartOfMantissa = mantissa.substring(0, E + 1); // Take integer part of floating point number
+                fractionPartOfMantissa = mantissa.substring(E + 1); // Take fraction part of floating point number
+            }
+            else {
+                mantissa = AddZeros(E, mantissa);
+                intPartOfMantissa = mantissa.substring(0, 1); // Take integer part of floating point number
+                fractionPartOfMantissa = mantissa.substring(1); // Take fraction part of floating point number
+            }
             value = "" + BinaryUnsigned2Decimal(intPartOfMantissa) + Convert2Decimal4Fraction(fractionPartOfMantissa);
         }
         else if (exp.contains("0")) { // if it is denormalized
@@ -305,9 +314,10 @@ public class Main {
         double frac = 0;
 
         for(int i = 1; i <= numberOfDigit; i++){
-            frac += Math.pow(2, -i);
+            if(fraction.charAt(i-1) == '1'){
+                frac += Math.pow(2, -i);
+            }
         }
-
         return ("" + frac).substring(1);
     }
 
@@ -355,4 +365,16 @@ public class Main {
         }
         return String.valueOf(numberChar);
     }
+    // Method to put zeros on the beginning of the binary number
+    // ex: for this operation 1.0101 * 2^-1 = 0.10101
+    public static String AddZeros(int exp, String binary){
+        String zeros = "";
+
+        for(int i = 0; i < -exp; i++){
+            zeros += "0";
+        }
+        return zeros + binary;
+    }
+
+
 }
