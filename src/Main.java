@@ -269,35 +269,33 @@ public class Main {
     }
 
     public static String Round2Even(String fraction) {
-        String newFraction = " ";
+        String newFraction = "";
         String control = "notHalfway";
 
         if (fraction.length() > 13) {
+            if (fraction.charAt(13) == '1'){
             for (int i = 13; i < fraction.length(); i++) {
-                if (fraction.charAt(i) != 1) {
-                    control = "halfway";
+                    if (fraction.charAt(i) != 1) {
+                        control = "halfway";
+                    }
                 }
             }
-
             for (int i = 0; i < 13; i++) {
                 if (fraction.charAt(13) == '0') {
                        newFraction = newFraction + fraction.charAt(i);
-                       return newFraction;
-
                 }
                 else if (fraction.charAt(13) == '1' && control == "halfway")  {
                           if(fraction.charAt(12) == '0') {
                               newFraction = newFraction + fraction.charAt(i);
-                              return newFraction;
+
                           }
                                   else {
-
-
+                                  newFraction = binaryAddOne(fraction.substring(0,13));
                               }
                               }
 
                 else if (fraction.charAt(13) == '1' && control == "notHalfway") {
-
+                    newFraction = binaryAddOne(fraction.substring(0,13));
                 }
             }
         }
