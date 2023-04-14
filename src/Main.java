@@ -175,7 +175,7 @@ public class Main {
         String binaryNumber = Hex2Binary(hexNumber);
         String exp = "";
         String signBit = "" + binaryNumber.charAt(0);
-        String sign = (signBit.equals('1')) ? "-" : "" ;
+        String sign = (signBit.equals("1")) ? "-" : "" ;
         String fraction = "";
         String value = "";
 
@@ -216,10 +216,12 @@ public class Main {
             mantissa = "1" + fraction; // for denormalized values: mantissa = 1.fraction
             double decimalMantissa = 1 + Convert2Decimal4Fraction(fraction);
             value = sign + (decimalMantissa * Math.pow(2, E)) ;
+            value = FractionShortener(value);
         }
-        else if (exp.contains("0")) { // if it is denormalized
+        // if it is denormalized
+        else if (exp.contains("0")) {
             e = 1;
-            E = e - bias;
+            E = 1 - bias;
             mantissa = "0" + fraction;
             if(isAllZeros(fraction)){
                 if(signBit.equals("0"))
@@ -228,8 +230,9 @@ public class Main {
                     value = "-0";
             }
             else{
-                double decimalMantissa = 1 + Convert2Decimal4Fraction(fraction);
-                value = sign + (decimalMantissa * Math.pow(2, E)) ;
+                double decimalMantissa = Convert2Decimal4Fraction(fraction);
+                value = sign + (decimalMantissa * Math.pow(2, E));
+                value = FractionShortener(value);
             }
         }
         else { // if it is special value
@@ -264,39 +267,30 @@ public class Main {
 
     public static String Round2Even(String fraction) {
         String newFraction = "";
-        String control = "notHalfway";
+        boolean isHalfway = false;
+        boolean isRoundUp = false;
 
         if (fraction.length() > 13) {
-            if (fraction.charAt(13) == '1'){
-            for (int i = 13; i < fraction.length(); i++) {
-                    if (fraction.charAt(i) != 1) {
-                        control = "halfway";
-                    }
-                }
+            if (fraction.charAt(13) == '1') {
+                isHalfway = true;
             }
-            for (int i = 0; i < 13; i++) {
-                if (fraction.charAt(13) == '0') {
-                       newFraction = newFraction + fraction.charAt(i);
-                }
-                else if (fraction.charAt(13) == '1' && control == "halfway")  {
-                          if(fraction.charAt(12) == '0') {
-                              newFraction = newFraction + fraction.charAt(i);
+            if (fraction.contains("1")) {
+                isRoundUp = true;
+            }
 
-                          }
-                                  else {
-                                  newFraction = binaryAddOne(fraction.substring(0,13));
-                              }
-                              }
-
-                else if (fraction.charAt(13) == '1' && control == "notHalfway") {
-                    newFraction = binaryAddOne(fraction.substring(0,13));
-                }
+            if (!isHalfway) {
+                newFraction += fraction.substring(0, 13);
+            }
+            else if (isHalfway && !isRoundUp)  {
+                newFraction += fraction.substring(0,13);
+            }
+            else {
+                newFraction = binaryAddOne(fraction.substring(0,13));
             }
         }
-
-        else {
+        else
             return fraction;
-        }
+
         return newFraction;
     }
 
@@ -356,6 +350,30 @@ public class Main {
             }
         }
         return String.valueOf(numberChar);
+    }
+
+    public static String FractionShortener(String str){
+
+        int indexOfDot = str.indexOf('.');
+        String shortenedNum = "";
+        String newFraction;
+
+        if(str.contains("E")) {
+            int indexOfE = str.indexOf('E');
+            if(str.substring(indexOfDot + 1, indexOfE).length() > 5){
+                newFraction = str.substring(indexOfDot, indexOfDot + 6);
+                shortenedNum = str.substring(0, indexOfDot) + newFraction + "e" + str.substring(indexOfE + 1);
+                return shortenedNum;
+            }
+        }
+        else {
+            if (str.substring(indexOfDot + 1).length() > 5) {
+                newFraction = str.substring(indexOfDot, indexOfDot + 6);
+                shortenedNum = str.substring(0, indexOfDot) + newFraction;
+                return shortenedNum;
+            }
+        }
+        return str;
     }
 
 
