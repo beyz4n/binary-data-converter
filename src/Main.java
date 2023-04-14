@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 import static java.lang.Math.pow;
@@ -34,6 +36,8 @@ public class Main {
         String tempLine = "";
 
         // Note: unnecessary checks, change to for loops in if
+        String reversed = "";
+        String convertedNumbers = "";
         while (fileInput.hasNextLine()) {
             line = fileInput.nextLine().trim();
             for(int i = 0; i < line.length() ; i++){
@@ -44,23 +48,35 @@ public class Main {
             line = CheckEndian(endian, tempLine);
             tempLine = "";
 
+
             for (int i = 0; line.length() - i != 0; i += size * 2) {
 
                 if (dType.equalsIgnoreCase("Floating point"))
-                    output.print(Float2Decimal(line.substring(i, i + size * 2)) + " ");
+                    convertedNumbers += Float2Decimal(line.substring(i, i + size * 2)) + " ";
                 else if (dType.equalsIgnoreCase("Signed integer"))
-                    output.print(Convert2Decimal4Signed(line.substring(i, i + size * 2)) + " ");
+                    convertedNumbers += Convert2Decimal4Signed(line.substring(i, i + size * 2)) + " ";
                 else if (dType.equalsIgnoreCase("Unsigned integer"))
-                    output.print(Convert2Decimal4Unsigned(line.substring(i, i + size * 2)) + " ");
+                    convertedNumbers += Convert2Decimal4Unsigned(line.substring(i, i + size * 2)) + " ";
                 else
                     throw new Exception("invalid data type: " + line);
 
 
             }
-            output.println();
-        }
 
-    output.close();
+            if(endian.equalsIgnoreCase("Little Endian")){
+                String tokens[] = convertedNumbers.split(" ");
+                for(int i = tokens.length - 1; i >= 0; i--){
+                    reversed += tokens[i] + " ";
+                }
+                if(endian.equalsIgnoreCase("Little Endian")){
+                    convertedNumbers = reversed;
+                }
+            }
+            output.println(convertedNumbers);
+            convertedNumbers = "";
+            reversed = "";
+        }
+        output.close();
     }
 
     // Method to change the byte ordering according to endian type
@@ -90,7 +106,6 @@ public class Main {
                 value += (int) pow(2, binary.length() - i - 1);
         }
         return value;
-
     }
 
     // Method for converting hexadecimals to binary format
@@ -168,7 +183,6 @@ public class Main {
         return converted;
     }
 
-
     // Method to convert floating point number to decimal number
     public static String Float2Decimal(String hexNumber) {
 
@@ -207,7 +221,6 @@ public class Main {
         int e; // variable for exp value in decimal
         int E; // variable for E in "value = (-1)^s * M * 2^E" calculation
         String mantissa;
-
 
         // if it is normalized
         if (exp.contains("0") && exp.contains("1")) {
@@ -249,10 +262,8 @@ public class Main {
         return value;
     }
 
-
-    public static int Convert2Decimal4Unsigned(String hexNumber) {
-
-         int convertedDecimalNumber = 0;
+    public static BigDecimal Convert2Decimal4Unsigned(String hexNumber) {
+         BigDecimal convertedDecimalNumber = new BigDecimal("0") ;
          String convertedBinaryNumber = Hex2Binary(hexNumber);
          int number;
          for(int i = convertedBinaryNumber.length() -1 ; i >= 0  ; i--){
@@ -260,7 +271,7 @@ public class Main {
                  number = 0;
              else
                  number = 1;
-             convertedDecimalNumber += (number) * pow(2,convertedBinaryNumber.length() -1 -i);
+             convertedDecimalNumber = convertedDecimalNumber.add(new BigDecimal((number * pow(2,convertedBinaryNumber.length() -1 -i))));
          }
         return convertedDecimalNumber;
     }
