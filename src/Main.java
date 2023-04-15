@@ -9,7 +9,12 @@ import static java.lang.Math.pow;
 public class Main {
 
     public static void main(String args[]) throws Exception {
-        File file = new File("input.txt");
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Input file: ");
+        String inputName = input.nextLine();
+
+        File file = new File(inputName);
         File outputFile = new File("output.txt");
 
         PrintWriter output = new PrintWriter(outputFile);
@@ -19,7 +24,7 @@ public class Main {
 
         Scanner fileInput = new Scanner(file);
 
-        Scanner input = new Scanner(System.in);
+
 
         System.out.print("Byte ordering: ");
         String endian = input.nextLine();
@@ -31,6 +36,9 @@ public class Main {
         String dSize = input.nextLine();
 
         int size = dSize.charAt(0)-'0';
+        if( !(1<=size && size<=4) ){
+            throw new Exception("invalid data type size: " + dSize);
+        }
 
         String line = "";
         String tempLine = "";
@@ -41,8 +49,14 @@ public class Main {
         while (fileInput.hasNextLine()) {
             line = fileInput.nextLine().trim();
             for(int i = 0; i < line.length() ; i++){
-                if(line.charAt(i) != ' '){
-                    tempLine += line.charAt(i);
+                if(line.charAt(i) == ' ' || (line.charAt(i) >= '0' && line.charAt(i) <= '9')
+                        || (line.charAt(i) >= 'a' && line.charAt(i) <= 'f') || (line.charAt(i) >= 'A' && line.charAt(i) <= 'F') ) {
+                    if (line.charAt(i) != ' ') {
+                        tempLine += line.charAt(i);
+                    }
+                }
+                else{
+                    throw new Exception("the input file contains a non hexadecimal character " + line.charAt(i));
                 }
             }
             line = CheckEndian(endian, tempLine);
@@ -51,24 +65,24 @@ public class Main {
 
             for (int i = 0; line.length() - i != 0; i += size * 2) {
 
-                if (dType.equalsIgnoreCase("Floating point"))
+                if (dType.equalsIgnoreCase("Float"))
                     convertedNumbers += Float2Decimal(line.substring(i, i + size * 2)) + " ";
-                else if (dType.equalsIgnoreCase("Signed integer"))
+                else if (dType.equalsIgnoreCase("int"))
                     convertedNumbers += Convert2Decimal4Signed(line.substring(i, i + size * 2)) + " ";
-                else if (dType.equalsIgnoreCase("Unsigned integer"))
+                else if (dType.equalsIgnoreCase("Unsigned"))
                     convertedNumbers += Convert2Decimal4Unsigned(line.substring(i, i + size * 2)) + " ";
                 else
-                    throw new Exception("invalid data type: " + line);
+                    throw new Exception("invalid data type: " + dType);
 
 
             }
-
-            if(endian.equalsIgnoreCase("Little Endian")){
+            // checking if it's little endian
+            if(endian.equalsIgnoreCase("L")){
                 String tokens[] = convertedNumbers.split(" ");
                 for(int i = tokens.length - 1; i >= 0; i--){
                     reversed += tokens[i] + " ";
                 }
-                if(endian.equalsIgnoreCase("Little Endian")){
+                if(endian.equalsIgnoreCase("L")){
                     convertedNumbers = reversed;
                 }
             }
@@ -83,7 +97,7 @@ public class Main {
     public static String CheckEndian(String endianType, String hexNumber) {
 
         // if Little Endian, change the byte ordering-> ex: A3B4C5 -> C5B4A3
-        if (endianType.equalsIgnoreCase("Little Endian")) {
+        if (endianType.equalsIgnoreCase("L")) {
             String newHex = "";
             for (int i = hexNumber.length() - 1; i > 0; i = i - 2) {
                 newHex = newHex + hexNumber.charAt(i - 1);
