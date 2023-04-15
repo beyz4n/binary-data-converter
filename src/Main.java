@@ -28,17 +28,29 @@ public class Main {
 
         System.out.print("Byte ordering: ");
         String endian = input.nextLine();
+        if(endian.equals(""))
+            throw new Exception("no byte ordering value detected");
+
+        if( !(endian.equalsIgnoreCase("l") || endian.equalsIgnoreCase("b") )  ){
+            throw new Exception("invalid byte ordering: " + endian);
+        }
 
         System.out.print("Data type: ");
         String dType = input.nextLine();
+        if(dType.equals(""))
+            throw new Exception("no Data type value detected");
 
         System.out.print("Data type size: ");
         String dSize = input.nextLine();
+        if(dSize.equals(""))
+            throw new Exception("no data type size value detected");
 
         int size = dSize.charAt(0)-'0';
+
         if( !(1<=size && size<=4) ){
             throw new Exception("invalid data type size: " + dSize);
         }
+
 
         String line = "";
         String tempLine = "";
