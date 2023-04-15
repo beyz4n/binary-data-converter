@@ -134,76 +134,113 @@ public class Main {
 
     // Method for converting hexadecimals to binary format
     public static String Hex2Binary(String hex) {
+        // creating a string that will be binary version of the hex
         String converted = "";
+        // making len its length
         int len = hex.length();
+        // count for indexing the hex string
         int count = 0;
+        // while we have characters left in the hex form
         while (len > 0) {
+            // if the character at index count is 0
             if (hex.charAt(count) == '0') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "0000";
                 len--;
                 count++;
+            // if the character at index count is 1
             } else if (hex.charAt(count) == '1') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "0001";
                 len--;
                 count++;
+            // if the character at index count is 2
             } else if (hex.charAt(count) == '2') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "0010";
                 len--;
                 count++;
+            // if the character at index count is 3
             } else if (hex.charAt(count) == '3') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "0011";
                 len--;
                 count++;
+            // if the character at index count is 4
             } else if (hex.charAt(count) == '4') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "0100";
                 len--;
                 count++;
+            // if the character at index count is 5
             } else if (hex.charAt(count) == '5') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "0101";
                 len--;
                 count++;
+            // if the character at index count is 6
             } else if (hex.charAt(count) == '6') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "0110";
                 len--;
                 count++;
+            // if the character at index count is 7
             } else if (hex.charAt(count) == '7') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "0111";
                 len--;
                 count++;
+            // if the character at index count is 8
             } else if (hex.charAt(count) == '8') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "1000";
                 len--;
                 count++;
+            // if the character at index count is 9
             } else if (hex.charAt(count) == '9') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "1001";
                 len--;
                 count++;
+            // if the character at index count is a
             } else if (hex.charAt(count) == 'a') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "1010";
                 len--;
                 count++;
+            // if the character at index count is b
             } else if (hex.charAt(count) == 'b') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "1011";
                 len--;
                 count++;
+            // if the character at index count is c
             } else if (hex.charAt(count) == 'c') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "1100";
                 len--;
                 count++;
+            // if the character at index count is d
             } else if (hex.charAt(count) == 'd') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "1101";
                 len--;
                 count++;
+            // if the character at index count is e
             } else if (hex.charAt(count) == 'e') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "1110";
                 len--;
                 count++;
+            // if the character at index count is f
             } else if (hex.charAt(count) == 'f') {
+                // then add the correct binary form to the converted string, update the parameters
                 converted += "1111";
                 len--;
                 count++;
             }
         }
+        // then return the converted string
         return converted;
     }
 
@@ -231,7 +268,7 @@ public class Main {
         else if (binaryNumber.length() == 24) {
             exp = binaryNumber.substring(1, 9); // 8 bits will be used exp part
             fraction = binaryNumber.substring(9);
-            // If exponent does not consists of only 1s, round fraction bits to 13 bits.
+            // If exponent does not consist of only 1s, round fraction bits to 13 bits.
             fraction = (exp.equals("11111111")) ?  fraction : Round2Even(fraction);
             if(fraction.length() == 14){ // If rounded fraction has 14 bits
                 // which mean is fraction was -> 11...11 (13 bits), but after rounding it is -> 10...00 (14 bits)
@@ -243,7 +280,7 @@ public class Main {
         else if (binaryNumber.length() == 32) {
             exp = binaryNumber.substring(1, 11); // 10 bits will be used exp part
             fraction = binaryNumber.substring(11);
-            // If exponent does not consists of only 1s, round fraction bits to 13 bits.
+            // If exponent does not consist of only 1s, round fraction bits to 13 bits.
             fraction = (exp.equals("1111111111")) ?  fraction : Round2Even(fraction);
             if(fraction.length() == 14){ // If rounded fraction has 14 bits
                 // which mean is fraction was -> 11...11 (13 bits), but after rounding it is -> 10...00 (14 bits)
@@ -268,31 +305,42 @@ public class Main {
 
         // if it is denormalized
         else if (exp.contains("0")) {
-            e = 1;
+            // in this case E = e - bias will be E = 1 - bias
             E = 1 - bias;
+            // and the condition for fraction to be all zeros means that this number is 0
             if(isAllZeros(fraction)){
+                // according to the sign bit value will be positive or negative zero.
                 if(signBit.equals("0"))
                     value = "0";
                 else
                     value = "-0";
             }
+            // if it is not all zeros then
             else{
+                // we need to calculate the mantissa using our method for converting decimal for fractions
                 mantissa = Convert2Decimal4Fraction(fraction);
+                // then we will say that the value will be sign + mantissa's decimal value multiplied with the 2 to the power of E
                 value = sign + (mantissa * Math.pow(2, E));
+                // then we will use our method to cut the fraction's remaining numbers to make it 5 digit precision
                 value = FractionShortener(value);
             }
         }
-        else { // if it is special value
+        // if it is special value
+        else {
+            // again checking for the fraction to be all zeros
             if(isAllZeros(fraction)) {
+                // if it is all zeros then value be infinity according to the sign bit
                 if(signBit.equals("0"))
                     value = "∞";
                 else
                     value = "-∞";
             }
+            // otherwise it will mean that our number is not-a-number
             else{
                 value = "NaN";
             }
         }
+        // after giving the right value for value, we return it
         return value;
     }
 
