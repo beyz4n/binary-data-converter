@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.*;
 
 import static java.lang.Math.pow;
@@ -125,7 +124,7 @@ public class Main {
         }
         return hexNumber; // if it is not Little Endian, return initial hex number
     }
-    // method to convert from hexadecimal to decimal using two's compliment
+    // Method to convert from hexadecimal to decimal using two's compliment
     public static int Convert2Decimal4Signed(String hexNumber) {
         // getting binary value
         String binary = Hex2Binary(hexNumber);
@@ -257,40 +256,40 @@ public class Main {
     // Method to convert floating point number to decimal number
     public static String Float2Decimal(String hexNumber) {
 
-        String binaryNumber = Hex2Binary(hexNumber); // Convert hex to binary representation
-        String exp = ""; // Variable to keep exponent
+        String binaryNumber = Hex2Binary(hexNumber); // convert hex to binary representation
+        String exp = ""; // variable to keep exponent
         String signBit = "" + binaryNumber.charAt(0);
         String sign = (signBit.equals("1")) ? "-" : "" ;
-        String fraction = ""; // Variable to keep fraction part in binary
-        String value = ""; // Variable to keep decimal value of given hex number
+        String fraction = ""; // variable to keep fraction part in binary
+        String value = ""; // variable to keep decimal value of given hex number
 
-        // For 1 byte
+        // for 1 byte
         if (binaryNumber.length() == 8) {
             exp = binaryNumber.substring(1, 5); // 4 bits will be used exp part
             fraction = binaryNumber.substring(5);
         }
-        // For 2 bytes
+        // for 2 bytes
         else if (binaryNumber.length() == 16) {
             exp = binaryNumber.substring(1, 7); // 6 bits will be used exp part
             fraction = binaryNumber.substring(7);
         }
-        // For 3 bytes
+        // for 3 bytes
         else if (binaryNumber.length() == 24) {
             exp = binaryNumber.substring(1, 9); // 8 bits will be used exp part
             fraction = binaryNumber.substring(9);
-            // If exponent does not consist of only 1s, round fraction bits to 13 bits.
+            // if exponent does not consist of only 1s, round fraction bits to 13 bits.
             fraction = (exp.equals("11111111")) ?  fraction : Round2Even(fraction);
-            if(fraction.length() == 14){ // If rounded fraction has 14 bits
+            if(fraction.length() == 14){ // if rounded fraction has 14 bits
                 // which mean is fraction was -> 11...11 (13 bits), but after rounding it is -> 10...00 (14 bits)
                 exp = binaryAddOne(exp); // so, add extra one bit to exp
                 fraction = fraction.substring(1); // delete fractions extra bit
             }
         }
-        // For 4 bytes
+        // for 4 bytes
         else if (binaryNumber.length() == 32) {
             exp = binaryNumber.substring(1, 11); // 10 bits will be used exp part
             fraction = binaryNumber.substring(11);
-            // If exponent does not consist of only 1s, round fraction bits to 13 bits.
+            // if exponent does not consist of only 1s, round fraction bits to 13 bits.
             fraction = (exp.equals("1111111111")) ?  fraction : Round2Even(fraction);
             if(fraction.length() == 14){ // If rounded fraction has 14 bits
                 // which mean is fraction was -> 11...11 (13 bits), but after rounding it is -> 10...00 (14 bits)
@@ -299,18 +298,18 @@ public class Main {
             }
         }
 
-        int bias = (int) (Math.pow(2, exp.length() - 1) - 1); // Calculate bias
-        int e; // Variable for exp value in decimal
-        int E; // Variable for E in "value = (-1)^s * M * 2^E" calculation
-        double mantissa; // Variable to keep mantissa
+        int bias = (int) (Math.pow(2, exp.length() - 1) - 1); // calculate bias
+        int e; // variable for exp value in decimal
+        int E; // variable for E in "value = (-1)^s * M * 2^E" calculation
+        double mantissa; // variable to keep mantissa
 
-        // If it is normalized
+        // if it is normalized
         if (exp.contains("0") && exp.contains("1")) {
             e = BinaryUnsigned2Decimal(exp);
             E = e - bias;
-            mantissa = 1 + Convert2Decimal4Fraction(fraction); // Mantissa for normalized values = 1.xxxx
-            value = sign + (mantissa * Math.pow(2, E)) ; // Calculate decimal value
-            value = FractionShortener(value); // Crop the fraction part
+            mantissa = 1 + Convert2Decimal4Fraction(fraction); // mantissa for normalized values = 1.xxxx
+            value = sign + (mantissa * Math.pow(2, E)) ; // calculate decimal value
+            value = FractionShortener(value); // crop the fraction part
         }
 
         // if it is denormalized
@@ -354,47 +353,49 @@ public class Main {
         return value;
     }
 
+    // Method for converting unsigned numbers to decimal
     public static BigDecimal Convert2Decimal4Unsigned(String hexNumber) {
-         BigDecimal convertedDecimalNumber = new BigDecimal("0") ; //we created variable that has the data type BigDecimal
-         String convertedBinaryNumber = Hex2Binary(hexNumber);  //converting hexadecimal to binary
+         BigDecimal convertedDecimalNumber = new BigDecimal("0") ; // we created variable that has the data type BigDecimal
+         String convertedBinaryNumber = Hex2Binary(hexNumber);  // converting hexadecimal to binary
          int number;
          for(int i = convertedBinaryNumber.length() -1 ; i >= 0  ; i--){
-             if (convertedBinaryNumber.charAt(i) == '0') //return char '0' or '1' to number 0 or 1
+             if (convertedBinaryNumber.charAt(i) == '0') // return char '0' or '1' to number 0 or 1
                  number = 0;
              else
                  number = 1;
              convertedDecimalNumber = convertedDecimalNumber.add(new BigDecimal((number * pow(2,convertedBinaryNumber.length() -1 -i))));
-         }  //multiplying number variable by the powers of 2
-        return convertedDecimalNumber;  //returning converted number
+         }  // multiplying number variable by the powers of 2
+        return convertedDecimalNumber;  // returning converted number
     }
 
+    // Method for rounding fraction
     public static String Round2Even(String fraction) {
-        String newFraction = ""; //initializing variables
+        String newFraction = ""; // initializing variables
         boolean isHalfway = false;
         boolean isRoundUp = false;
 
-        if (fraction.length() > 13) { //if fraction's length is more than 13, enters this block
-            if (fraction.charAt(13) == '1') { //if char at 13 is 1 then set isHalfway to true
+        if (fraction.length() > 13) { // if fraction's length is more than 13, enters this block
+            if (fraction.charAt(13) == '1') { // if char at 13 is 1 then set isHalfway to true
                 isHalfway = true;
             }
-            if (fraction.contains("1")) {  //if any digit after 13th contains 1, then set isRoundUp to true which means we will add 1 to the number
+            if (fraction.contains("1")) {  // if any digit after 13th contains 1, then set isRoundUp to true which means we will add 1 to the number
                 isRoundUp = true;
             }
 
-            if (!isHalfway) {  //if it is not halfway, then take first 13 bits and don't add 1
+            if (!isHalfway) {  // if it is not halfway, then take first 13 bits and don't add 1
                 newFraction += fraction.substring(0, 13);
             }
-            else if (isHalfway && !isRoundUp)  {  //if it is halfway and not containing any 1 after 13th digit, then take first 13 bits and don't add 1
+            else if (isHalfway && !isRoundUp)  {  // if it is halfway and not containing any 1 after 13th digit, then take first 13 bits and don't add 1
                 newFraction += fraction.substring(0,13);
             }
-            else {  ////if it is halfway and containing any 1 after 13th digit, then add 1
+            else {  // if it is halfway and containing any 1 after 13th digit, then add 1
                 newFraction = binaryAddOne(fraction.substring(0,13));
             }
         }
         else
-            return fraction; //if fraction's length is less than 13, return fraction's itself directly
+            return fraction; // if fraction's length is less than 13, return fraction's itself directly
 
-        return newFraction; //return new fraction
+        return newFraction; // return new fraction
     }
 
     // Method for converting fraction part of the floating point number to decimal
@@ -425,6 +426,7 @@ public class Main {
         return decimal;
     }
 
+    // Method to check is given string contains just zeros
     public static boolean isAllZeros(String str)
     {
         for (int i = 0; i < str.length(); i++){
@@ -434,36 +436,37 @@ public class Main {
         return true;
     }
 
-    public static String binaryAddOne(String number){   //this method adds 1 to the binary number for rounding it up
+    // Method  for adding 1 to the binary number for rounding it up
+    public static String binaryAddOne(String number){
         int i = number.length() - 1;
-        char[] numberChar = number.toCharArray(); //creating char array
+        char[] numberChar = number.toCharArray(); // creating char array
 
         while(i >= 0){
-            if(numberChar[i] == '1') {  //if it is 1, when we add 1 to it; it should be 0
+            if(numberChar[i] == '1') {  // if it is 1, when we add 1 to it; it should be 0
                 numberChar[i] = '0';
                 i--;
-                if(i == -1) {  //if it reaches the beginning of the string, which means only the first digit is 0, then add one more digit and set it 1
+                if(i == -1) {  // if it reaches the beginning of the string, which means only the first digit is 0, then add one more digit and set it 1
                     return "1" + String.valueOf(numberChar);
                 }
             }
-            else {  //if it is 0, when we add 1 to it; it should be 1
+            else {  // if it is 0, when we add 1 to it; it should be 1
                 numberChar[i] = '1';
                 break;
             }
         }
-        return String.valueOf(numberChar); //returning string
+        return String.valueOf(numberChar); // returning string
     }
 
     // Method to crop the fraction
     public static String FractionShortener(String str){
 
-        int indexOfDot = str.indexOf('.'); // Variable to keep index of dot
-        String shortenedNum = ""; // Variable to keep number that has precision of 5 digits after the decimal point
-        String newFraction; // Variable to keep fraction that has 5 digit
+        int indexOfDot = str.indexOf('.'); // variable to keep index of dot
+        String shortenedNum = ""; // variable to keep number that has precision of 5 digits after the decimal point
+        String newFraction; // variable to keep fraction that has 5 digit
 
         if(str.contains("E")) {
-            int indexOfE = str.indexOf('E'); // Variable to keep index of 'E'
-            // If fraction has more than 5 digits
+            int indexOfE = str.indexOf('E'); // variable to keep index of 'E'
+            // if fraction has more than 5 digits
             if(str.substring(indexOfDot + 1, indexOfE).length() > 5){
                 newFraction = str.substring(indexOfDot, indexOfDot + 6);
                 shortenedNum = str.substring(0, indexOfDot) + newFraction + "e" + str.substring(indexOfE + 1);
@@ -471,7 +474,7 @@ public class Main {
             }
         }
         else {
-            // If fraction has more than 5 digits
+            // if fraction has more than 5 digits
             if (str.substring(indexOfDot + 1).length() > 5) {
                 newFraction = str.substring(indexOfDot, indexOfDot + 6);
                 shortenedNum = str.substring(0, indexOfDot) + newFraction;
