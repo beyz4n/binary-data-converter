@@ -9,55 +9,60 @@ import static java.lang.Math.pow;
 public class Main {
 
     public static void main(String args[]) throws Exception {
+        // creating scanner to take input from the user
         Scanner input = new Scanner(System.in);
-
+        // prompting the user to enter the file name in a .txt format
         System.out.print("Input file: ");
         String inputName = input.nextLine();
-
+        // creating output file
         File file = new File(inputName);
         File outputFile = new File("output.txt");
 
         PrintWriter output = new PrintWriter(outputFile);
-
+        // exception handling for the case that the input file could not be found
         if (!file.exists())
             throw new Exception("input file does not exist: " + file.getName());
-
+        // creating scanner to read the input file
         Scanner fileInput = new Scanner(file);
-
+        // prompting the user to enter the byte ordering
         System.out.print("Byte ordering: ");
         String endian = input.nextLine();
+        // exception handling for false inputs
         if(endian.equals(""))
             throw new Exception("no byte ordering value detected");
 
         if( !(endian.equalsIgnoreCase("l") || endian.equalsIgnoreCase("b") )  ){
             throw new Exception("invalid byte ordering: " + endian);
         }
-
+        // prompting the user to enter the data type
         System.out.print("Data type: ");
         String dType = input.nextLine();
+        // exception handling for false input
         if(dType.equals(""))
             throw new Exception("no Data type value detected");
-
+        // prompting user to enter data type size
         System.out.print("Data type size: ");
         String dSize = input.nextLine();
+        // exception handling for false input
         if(dSize.equals(""))
             throw new Exception("no data type size value detected");
 
         int size = dSize.charAt(0)-'0';
-
+        // exception handling for false input
         if( !(1<=size && size<=4) ){
             throw new Exception("invalid data type size: " + dSize);
         }
 
-
+        // creating strings to hold lines from the input file
         String line = "";
         String tempLine = "";
-
-        // Note: unnecessary checks, change to for loops in if
+        // creating strings to reverse strings
         String reversed = "";
         String convertedNumbers = "";
+        // taking a line from the input file
         while (fileInput.hasNextLine()) {
             line = fileInput.nextLine().trim();
+            // skipping whitespace char and checking for non-hexadecimal chars
             for(int i = 0; i < line.length() ; i++){
                 if(line.charAt(i) == ' ' || (line.charAt(i) >= '0' && line.charAt(i) <= '9')
                         || (line.charAt(i) >= 'a' && line.charAt(i) <= 'f') || (line.charAt(i) >= 'A' && line.charAt(i) <= 'F') ) {
@@ -65,14 +70,16 @@ public class Main {
                         tempLine += line.charAt(i);
                     }
                 }
+                // exception handling for the case of non-hexadecimal chars
                 else{
                     throw new Exception("the input file contains a non hexadecimal character " + line.charAt(i));
                 }
             }
+            // reversing the line if needed
             line = CheckEndian(endian, tempLine);
             tempLine = "";
 
-
+            // calling according functions for the data type to be converted to
             for (int i = 0; line.length() - i != 0; i += size * 2) {
 
                 if (dType.equalsIgnoreCase("Float"))
@@ -86,7 +93,7 @@ public class Main {
 
 
             }
-            // checking if it's little endian
+            // checking if it's little endian, if it is reversing the converted numbers places
             if(endian.equalsIgnoreCase("L")){
                 String tokens[] = convertedNumbers.split(" ");
                 for(int i = tokens.length - 1; i >= 0; i--){
@@ -96,6 +103,7 @@ public class Main {
                     convertedNumbers = reversed;
                 }
             }
+            // printing the converted numbers to the output file
             output.println(convertedNumbers);
             convertedNumbers = "";
             reversed = "";
@@ -117,18 +125,20 @@ public class Main {
         }
         return hexNumber; // if it is not Little Endian, return initial hex number
     }
-
+    // method to convert from hexadecimal to decimal using two's compliment
     public static int Convert2Decimal4Signed(String hexNumber) {
-
+        // getting binary value
         String binary = Hex2Binary(hexNumber);
         int value = 0;
+        // for the case of starting with a 1, adding the negative of the according number
         if (binary.charAt(0) == '1')
             value = (int) (-pow(2, binary.length() - 1));
-
+        // traversing the binary number and adding the according value
         for (int i = 1; i < binary.length(); i++) {
             if (binary.charAt(i) == '1')
                 value += (int) pow(2, binary.length() - i - 1);
         }
+        // returning the converted value
         return value;
     }
 
