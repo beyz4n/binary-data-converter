@@ -355,46 +355,46 @@ public class Main {
     }
 
     public static BigDecimal Convert2Decimal4Unsigned(String hexNumber) {
-         BigDecimal convertedDecimalNumber = new BigDecimal("0") ;
-         String convertedBinaryNumber = Hex2Binary(hexNumber);
+         BigDecimal convertedDecimalNumber = new BigDecimal("0") ; //we created variable that has the data type BigDecimal
+         String convertedBinaryNumber = Hex2Binary(hexNumber);  //converting hexadecimal to binary
          int number;
          for(int i = convertedBinaryNumber.length() -1 ; i >= 0  ; i--){
-             if (convertedBinaryNumber.charAt(i) == '0')
+             if (convertedBinaryNumber.charAt(i) == '0') //return char '0' or '1' to number 0 or 1
                  number = 0;
              else
                  number = 1;
              convertedDecimalNumber = convertedDecimalNumber.add(new BigDecimal((number * pow(2,convertedBinaryNumber.length() -1 -i))));
-         }
-        return convertedDecimalNumber;
+         }  //multiplying number variable by the powers of 2
+        return convertedDecimalNumber;  //returning converted number
     }
 
     public static String Round2Even(String fraction) {
-        String newFraction = "";
+        String newFraction = ""; //initializing variables
         boolean isHalfway = false;
         boolean isRoundUp = false;
 
-        if (fraction.length() > 13) {
-            if (fraction.charAt(13) == '1') {
+        if (fraction.length() > 13) { //if fraction's length is more than 13, enters this block
+            if (fraction.charAt(13) == '1') { //if char at 13 is 1 then set isHalfway to true
                 isHalfway = true;
             }
-            if (fraction.contains("1")) {
+            if (fraction.contains("1")) {  //if any digit after 13th contains 1, then set isRoundUp to true which means we will add 1 to the number
                 isRoundUp = true;
             }
 
-            if (!isHalfway) {
+            if (!isHalfway) {  //if it is not halfway, then take first 13 bits and don't add 1
                 newFraction += fraction.substring(0, 13);
             }
-            else if (isHalfway && !isRoundUp)  {
+            else if (isHalfway && !isRoundUp)  {  //if it is halfway and not containing any 1 after 13th digit, then take first 13 bits and don't add 1
                 newFraction += fraction.substring(0,13);
             }
-            else {
+            else {  ////if it is halfway and containing any 1 after 13th digit, then add 1
                 newFraction = binaryAddOne(fraction.substring(0,13));
             }
         }
         else
-            return fraction;
+            return fraction; //if fraction's length is less than 13, return fraction's itself directly
 
-        return newFraction;
+        return newFraction; //return new fraction
     }
 
     // Method for converting fraction part of the floating point number to decimal
@@ -434,24 +434,24 @@ public class Main {
         return true;
     }
 
-    public static String binaryAddOne(String number){
+    public static String binaryAddOne(String number){   //this method adds 1 to the binary number for rounding it up
         int i = number.length() - 1;
-        char[] numberChar = number.toCharArray();
+        char[] numberChar = number.toCharArray(); //creating char array
 
         while(i >= 0){
-            if(numberChar[i] == '1') {
+            if(numberChar[i] == '1') {  //if it is 1, when we add 1 to it; it should be 0
                 numberChar[i] = '0';
                 i--;
-                if(i == -1) {
+                if(i == -1) {  //if it reaches the beginning of the string, which means only the first digit is 0, then add one more digit and set it 1
                     return "1" + String.valueOf(numberChar);
                 }
             }
-            else {
+            else {  //if it is 0, when we add 1 to it; it should be 1
                 numberChar[i] = '1';
                 break;
             }
         }
-        return String.valueOf(numberChar);
+        return String.valueOf(numberChar); //returning string
     }
 
     // Method to crop the fraction
