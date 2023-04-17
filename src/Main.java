@@ -65,8 +65,14 @@ public class Main {
             for(int i = 0; i < line.length() ; i++){
                 if(line.charAt(i) == ' ' || (line.charAt(i) >= '0' && line.charAt(i) <= '9')
                         || (line.charAt(i) >= 'a' && line.charAt(i) <= 'f') || (line.charAt(i) >= 'A' && line.charAt(i) <= 'F') ) {
-                    if (line.charAt(i) != ' ') {
-                        tempLine += line.charAt(i);
+                    // exception handling for uppercase hexadecimal characters
+                    if( (line.charAt(i) >= 'A' && line.charAt(i) <= 'F') ) {
+                        throw new Exception("the input file contains an uppercase hexadecimal character " + line.charAt(i));
+                    }
+                    else {
+                        if (line.charAt(i) != ' ') {
+                            tempLine += line.charAt(i);
+                        }
                     }
                 }
                 // exception handling for the case of non-hexadecimal chars
